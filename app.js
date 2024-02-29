@@ -21,6 +21,10 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
+app.get("/", (req, res)=> {
+    res.send("<h1>Home page</h1>")
+})
+
 app.listen(3000, () => {
   console.log("Server is running. Use our API on port: 3000");
 });
