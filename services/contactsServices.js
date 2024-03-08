@@ -55,3 +55,16 @@ export async function updateContact(id, data) {
     await updateContacts(contacts);
     return contacts[index];
 }
+
+export async function updateStatus(id, { favorite }) {
+    const contacts = await listContacts();
+    const index = contacts.findIndex((contact) => contact.id === id);
+    if (index === -1){
+        return null;
+    }
+
+    contacts[index].favorite = favorite;
+    await updateContacts(contacts);
+
+    return contacts[index];
+}
