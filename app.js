@@ -4,10 +4,9 @@ import morgan from "morgan";
 import cors from "cors";
 
 import contactsRouter from "./routes/contactsRouter.js";
+import "dotenv/config"
 
 const app = express();
-
-console.log(process.env)
 
 app.use(morgan("tiny"));
 app.use(cors());
@@ -24,16 +23,16 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
-const { DB_HOST } = process.env;
+const { DB_HOST, PORT = 4000 } = process.env;
 
 mongoose
   .connect(DB_HOST)
   .then(() => {
-    app.listen(3000, () => {
-      console.log('Database connection successful');
+    app.listen(PORT, () => {
+      console.log(`Database connection successful`);
     });
   })
-  .catch(error => {
-    console.log(error.message);
+  .catch((err) => {
+    console.log(err.message);
     process.exit(1);
   });
