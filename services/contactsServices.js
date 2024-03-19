@@ -1,70 +1,22 @@
-import fs from 'fs/promises';
-import path from 'path';
-import { nanoid } from 'nanoid';
+import Contact from "../models/Contact.js";
 
-const contactPath = path.resolve("db", "contacts.json");
-
-export async function updateContacts(contacts){
-    fs.writeFile(contactPath, JSON.stringify(contacts, null, 2));
-    return;
-}
-
-
-export async function listContacts() {
-    const result = await fs.readFile(contactPath);
-    return JSON.parse(result);
-}
-
+export const listContacts = () => {
+  return Contact.find();
+};
 export async function getContactById(id) {
-    const contacts = await listContacts();
-    const response = contacts.find((contact) => contact.id === id);
-    return response || null;
+  return Contact.findById(id);
 }
 
 export async function removeContact(id) {
-    const contacts = await listContacts();
-    const index = contacts.findIndex((contact) => contact.id === id);
-    if (index === -1) return null;
-
-    const response = contacts.splice(index, 1);
-    await updateContacts(contacts);
-    return response;
-}
-  
-export async function addContact(name, email, phone) {
-    const contacts = await listContacts();
-    const newContact = {
-        id: nanoid(),
-        name,
-        email,
-        phone
-    }
-    contacts.push(newContact);
-    await updateContacts(contacts);
-    return newContact;
+  return Contact.findByIdAndDelete(id);
 }
 
-export async function updateContact(id, data) {
-    const contacts = await listContacts();
-    const index = contacts.findIndex(contact => contact.id === id);
-    if (index === -1) {
-        return null;
-    }
-
-    contacts[index] = {...contacts[index], ...data};
-    await updateContacts(contacts);
-    return contacts[index];
+export async function addContact(body) {
+  return Contact.create(body);
 }
-
-export async function updateStatus(id, { favorite }) {
-    const contacts = await listContacts();
-    const index = contacts.findIndex((contact) => contact.id === id);
-    if (index === -1){
-        return null;
-    }
-
-    contacts[index].favorite = favorite;
-    await updateContacts(contacts);
-
-    return contacts[index];
+export async function updateContact(id, body) {
+  return Contact.findByIdAndUpdate(id, body);
+}
+export async function updateStatus(id, body) {
+  return Contact.findByIdAndUpdate(id, body);
 }
