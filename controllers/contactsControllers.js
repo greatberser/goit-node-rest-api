@@ -60,9 +60,6 @@ export const updateContact = async (req, res, next) => {
     const { error } = updateContactSchema.validate(req.body);
     if (error) throw HttpError(400, error.message);
 
-    if (Object.keys(req.body).length === 0) {
-      throw HttpError(400, "Body must have at least one field");
-    }
     const result = await contactsService.updateContact(id, req.body);
     if (!result) {
       throw HttpError(404);
@@ -77,10 +74,6 @@ export const updateStatusContact = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { error } = updateContactSchema.validate(req.body);
-
-    if (Object.keys(req.body).length === 0) {
-      throw HttpError(400, "Body must have at least one field");
-    }
 
     if (error) {
       throw HttpError(400, error.message);
