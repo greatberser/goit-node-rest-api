@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 import * as authServices from "../services/authServices.js";
-import * as userServices from "../services/userServices.js";
 
 import HttpError from "../helpers/HttpError.js";
 
@@ -11,7 +10,7 @@ const { JWT_SECRET } = process.env;
 const signup = async (req, res, next) => {
   try {
     const { email } = req.body;
-    const user = await userServices.findUser({ email });
+    const user = await authServices.findUser({ email });
     if (user) {
       throw HttpError(409, "Email already in use");
     }
@@ -30,13 +29,13 @@ const signup = async (req, res, next) => {
 const signin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const user = await userServices.findUser({ email });
+    const user = await authServices.findUser({ email });
     if (!user) {
-      throw HttpError(401, "Email or password invalid"); // "Email invalid"
+      throw HttpError(401, "Email or password invalid"); 
     }
     const passwordCompare = await bcrypt.compare(password, user.password);
     if (!passwordCompare) {
-      throw HttpError(401, "Email or password invalid"); // "Password invalid"
+      throw HttpError(401, "Email or password invalid"); 
     }
 
     const payload = {
