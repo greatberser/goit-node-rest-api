@@ -80,9 +80,30 @@ const signout = async (req, res, next) => {
   }
 };
 
-export default {
+const changeAvatar = async (req, res, next) => {
+    try {
+    const { _id } = req.user;
+    const { path: oldPath, filename } = req.file;
+
+    Jimp.read(oldPath, (err, lenna) => {
+        if (err) throw err;
+        lenna.resize(250, 250).write(`${avatarsDir}\\${filename}`);
+        fs.rm(oldPath);
+    });
+    const avatarURL = path.join("avatars", filename);
+
+    await authServices.setAvatar(_id, avatarURL);
+    return res.json({ avatarURL });
+    } catch (error) {
+    next(error);
+    }
+};
+  
+
+export default  {
   signup,
   signin,
   getCurrent,
   signout,
+  changeAvatar,
 };
