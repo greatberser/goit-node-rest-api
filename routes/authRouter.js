@@ -2,7 +2,7 @@ import express from "express";
 
 import authController from "../controllers/authControllers";
 
-import authtenticate from "../helpers/authtenticate";
+import authtenticate from "../middlewars/authtenticate";
 
 const authRouter = express.Router();
 
