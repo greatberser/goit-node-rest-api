@@ -1,13 +1,13 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-import * as authServices from "../services/authServices.js";
+import * as authServices from "../services/userServices.js";
 
 import HttpError from "../helpers/HttpError.js";
 
 const { JWT_SECRET } = process.env;
 
-const signup = async (req, res, next) => {
+const register = async (req, res, next) => {
   try {
     const { email } = req.body;
     const user = await authServices.findUser({ email });
@@ -26,7 +26,7 @@ const signup = async (req, res, next) => {
   }
 };
 
-const signin = async (req, res, next) => {
+const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await authServices.findUser({ email });
@@ -67,7 +67,7 @@ const getCurrent = async (req, res, next) => {
   }
 };
 
-const signout = async (req, res, next) => {
+const logout = async (req, res, next) => {
   try {
     const { _id } = req.user;
     await authServices.setToken(_id);
@@ -81,8 +81,8 @@ const signout = async (req, res, next) => {
 };
 
 export default {
-  signup,
-  signin,
+  register,
+  login,
   getCurrent,
-  signout,
+  logout,
 };
