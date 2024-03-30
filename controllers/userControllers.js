@@ -15,7 +15,7 @@ const register = async (req, res, next) => {
       throw HttpError(409, "Email already in use");
     }
 
-    const newUser = await authServices.signup(req.body);
+    const newUser = await authServices.register(req.body);
 
     res.status(201).json({
       email: newUser.email,

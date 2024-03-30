@@ -7,9 +7,12 @@ import {
     updateContact,
 } from "../controllers/contactsControllers.js";
 import validateBody from "../helpers/validateBody.js";
+import authtenticate from "../middlewars/authtenticate.js";
 import { createContactSchema, updateStatusSchema, updateContactSchema } from "../schemas/contactsSchemas.js";
 
 const contactsRouter = express.Router();
+
+contactsRouter.use(authtenticate)
 
 contactsRouter.get("/", getAllContacts);
 

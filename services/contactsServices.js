@@ -1,18 +1,18 @@
 import Contact from "../models/Contact.js";
 
-export const listContacts = () => {
-  return Contact.find();
+export const listContacts = (ownerId) => {
+  return Contact.find({ owner: ownerId });
 };
-export async function getContactById(id) {
-  return Contact.findById(id);
+export async function getContactById(id, ownerId) {
+  return Contact.findById({ id, owner: ownerId });
 }
 
 export async function removeContact(id) {
-  return Contact.findByIdAndDelete(id);
+  return Contact.findByIdAndDelete({id, owner: ownerId});
 }
 
 export async function addContact(body) {
-  return Contact.create(body);
+  return Contact.create({ body, owner: ownerId });
 }
 export async function updateContact(id, body) {
   return Contact.findByIdAndUpdate(id, body);
