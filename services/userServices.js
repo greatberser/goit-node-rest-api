@@ -6,7 +6,7 @@ export const findUser = (filter) => User.findOne(filter);
 
 export const findUserById = (id) => User.findById(id);
 
-export const signup = async (data) => {
+export const register = async (data) => {
   const { password } = data;
   const hashPassword = await bcrypt.hash(password, 10);
   return user.create({ ...data, password: hashPassword });
