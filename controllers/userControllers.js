@@ -1,5 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import Jimp from "jimp";
+import fs from "fs/promises";
+import path from "path";
 
 import * as authServices from "../services/userServices.js";
 
@@ -15,11 +18,13 @@ const register = async (req, res, next) => {
       throw HttpError(409, "Email already in use");
     }
 
-    const newUser = await authServices.signup(req.body);
+    const avatarUrl = gravatar.url(email, { r: "pg" }, true);
+    const newUser = await authServices.register(req.body, avatarUrl);
 
     res.status(201).json({
       email: newUser.email,
       subscription: newUser.subscription,
+      avatarUrl: newUser.avatarUrl,
     });
   } catch (error) {
     next(error);
@@ -88,12 +93,12 @@ const changeAvatar = async (req, res, next) => {
     Jimp.read(oldPath, (err, lenna) => {
         if (err) throw err;
         lenna.resize(250, 250).write(`${avatarsDir}\\${filename}`);
-        fs.rm(oldPath);
+        fs.unlink(oldPath);
     });
-    const avatarURL = path.join("avatars", filename);
+    const avatarUrl = path.join("avatars", filename);
 
-    await authServices.setAvatar(_id, avatarURL);
-    return res.json({ avatarURL });
+    await authServices.setAvatar(_id, avatarUrl);
+    return res.json({ avatarUrl });
     } catch (error) {
     next(error);
     }

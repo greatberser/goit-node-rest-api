@@ -4,6 +4,8 @@ import userController from "../controllers/userControllers.js";
 
 import authtenticate from "../middlewars/authtenticate.js";
 
+import upload from "../middlewars/upload.js"
+
 const authRouter = express.Router();
 
 authRouter.post("/register", userController.register);
@@ -15,10 +17,10 @@ authRouter.get("/current", authtenticate, userController.getCurrent);
 authRouter.post("/logout", authtenticate, userController.logout);
 
 authRouter.patch(
-    "/users/avatars",
+    "/avatars",
     upload.single("photo"),
     authtenticate,
-    authController.changeAvatar
+    userController.changeAvatar
   );
 
 export default authRouter;
