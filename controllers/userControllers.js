@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-import * as authServices from "../services/userServices.js";
+import * as userServices from "../services/userServices.js";
 
 import HttpError from "../helpers/HttpError.js";
 
@@ -10,12 +10,13 @@ const { JWT_SECRET } = process.env;
 const register = async (req, res, next) => {
   try {
     const { email } = req.body;
-    const user = await authServices.findUser({ email });
+
+    const user = await userServices.findUser({ email });
     if (user) {
       throw HttpError(409, "Email already in use");
     }
 
-    const newUser = await authServices.register(req.body);
+    const newUser = await userServices.signup(req.body);
 
     res.status(201).json({
       email: newUser.email,
@@ -29,7 +30,7 @@ const register = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const user = await authServices.findUser({ email });
+    const user = await userServices.findUser({ email });
     if (!user) {
       throw HttpError(401, "Email or password invalid"); 
     }
@@ -43,7 +44,7 @@ const login = async (req, res, next) => {
     };
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-    await authServices.setToken(user._id, token);
+    await userServices.setToken(user._id, token);
 
     res.json({
       token,
@@ -70,7 +71,7 @@ const getCurrent = async (req, res, next) => {
 const logout = async (req, res, next) => {
   try {
     const { _id } = req.user;
-    await authServices.setToken(_id);
+    await userServices.setToken(_id);
 
     res.json({
       message: "Signout success",
