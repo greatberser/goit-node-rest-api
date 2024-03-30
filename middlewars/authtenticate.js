@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 import { findUserById } from "../services/userServices.js";
 
-import HttpError from "./HttpError.js";
+import HttpError from "../helpers/HttpError.js";
 
 const { JWT_SECRET } = process.env;
 
