@@ -4,23 +4,14 @@ import userController from "../controllers/userControllers.js";
 
 import authtenticate from "../middlewars/authtenticate.js";
 
-import upload from "../middlewars/upload.js"
+const userRouter = express.Router();
 
-const authRouter = express.Router();
+userRouter.post("/register", userController.register);
 
-authRouter.post("/register", userController.register);
+userRouter.post("/login", userController.login);
 
-authRouter.post("/login", userController.login);
+userRouter.get("/current", authtenticate, userController.getCurrent);
 
-authRouter.get("/current", authtenticate, userController.getCurrent);
+userRouter.post("/logout", authtenticate, userController.logout);
 
-authRouter.post("/logout", authtenticate, userController.logout);
-
-authRouter.patch(
-    "/avatars",
-    upload.single("photo"),
-    authtenticate,
-    userController.changeAvatar
-  );
-
-export default authRouter;
+export default userRouter;
