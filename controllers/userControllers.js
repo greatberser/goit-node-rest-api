@@ -19,8 +19,12 @@ const register = async (req, res, next) => {
       throw HttpError(409, "Email already in use");
     }
 
+<<<<<<< HEAD
     const avatarUrl = gravatar.url(email, { r: "pg" }, true);
     const newUser = await authServices.register(...req.body, avatarUrl);
+=======
+    const newUser = await userServices.signup(req.body);
+>>>>>>> main
 
     res.status(201).json({
       email: newUser.email,
