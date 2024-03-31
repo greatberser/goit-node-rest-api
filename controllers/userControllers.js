@@ -1,5 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import Jimp from "jimp";
+import fs from "fs/promises";
+import path from "path";
 
 import * as userServices from "../services/userServices.js";
 
@@ -16,11 +19,17 @@ const register = async (req, res, next) => {
       throw HttpError(409, "Email already in use");
     }
 
+<<<<<<< HEAD
+    const avatarUrl = gravatar.url(email, { r: "pg" }, true);
+    const newUser = await authServices.register(...req.body, avatarUrl);
+=======
     const newUser = await userServices.signup(req.body);
+>>>>>>> main
 
     res.status(201).json({
       email: newUser.email,
       subscription: newUser.subscription,
+      avatarUrl: newUser.avatarUrl,
     });
   } catch (error) {
     next(error);
@@ -81,9 +90,29 @@ const logout = async (req, res, next) => {
   }
 };
 
+const changeAvatar = async (req, res, next) => {
+    try {
+    const { _id } = req.user;
+    const { path: oldPath, filename } = req.file;
+
+    Jimp.read(oldPath, (err, lenna) => {
+        if (err) throw err;
+        lenna.resize(250, 250).write(`${avatarsDir}\\${filename}`);
+        fs.unlink(oldPath);
+    });
+    const avatarUrl = path.join("avatars", filename);
+
+    await authServices.setAvatar(_id, avatarUrl);
+    return res.json({ avatarUrl });
+    } catch (error) {
+    next(error);
+    }
+};
+
 export default {
   register,
   login,
   getCurrent,
   logout,
+  changeAvatar,
 };

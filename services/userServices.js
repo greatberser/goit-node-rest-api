@@ -14,3 +14,9 @@ export const signup = async (data) => {
 
 export const setToken = (id, token = "") =>
   User.findByIdAndUpdate(id, { token });
+<<<<<<< HEAD
+
+export const setAvatar = (id, avatarUrl) =>
+  User.findByIdAndUpdate(id, { avatarUrl });
+=======
+>>>>>>> main

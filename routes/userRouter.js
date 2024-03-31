@@ -14,4 +14,8 @@ userRouter.get("/current", authtenticate, userController.getCurrent);
 
 userRouter.post("/logout", authtenticate, userController.logout);
 
+<<<<<<< HEAD
 export default userRouter;
+=======
+export default userRouter;
+>>>>>>> main
