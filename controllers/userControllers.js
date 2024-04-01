@@ -87,23 +87,24 @@ const logout = async (req, res, next) => {
 };
 
 const changeAvatar = async (req, res, next) => {
-    try {
+  try {
     const { _id } = req.user;
     const { path: oldPath, filename } = req.file;
 
-    Jimp.read(oldPath, (err, lenna) => {
-        if (err) throw err;
-        lenna.resize(250, 250).write(`${avatarsDir}\\${filename}`);
-        fs.unlink(oldPath);
-    });
+    const lenna = await Jimp.read(oldPath);
+    await lenna.resize(250, 250).writeAsync(`${avatarsDir}/${filename}`);
+    await fs.unlink(oldPath);
+
     const avatarUrl = path.join("avatars", filename);
 
-    await authServices.setAvatar(_id, avatarUrl);
+    await userServices.setAvatar(_id, avatarUrl);
+
     return res.json({ avatarUrl });
-    } catch (error) {
+  } catch (error) {
     next(error);
-    }
+  }
 };
+
 
 export default {
   register,
