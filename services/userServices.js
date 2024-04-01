@@ -17,3 +17,6 @@ export const setToken = (id, token = "") =>
 
 export const setAvatar = (id, avatarUrl) =>
   User.findByIdAndUpdate(id, { avatarUrl });
+
+export const updateUser = async (filter, data) => User.findOneAndUpdate(filter, data);
+

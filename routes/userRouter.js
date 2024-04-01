@@ -17,10 +17,14 @@ userRouter.get("/current", authtenticate, userController.getCurrent);
 userRouter.post("/logout", authtenticate, userController.logout);
 
 userRouter.patch(
-    "/users/avatars",
+    "/avatars",
     upload.single("photo"),
     authtenticate,
     userController.changeAvatar
 );
+
+userRouter.get("/verify/:verificationToken", userController.verify);
+
+userRouter.post("/verify", userController.verifyAgain);
 
 export default userRouter;
