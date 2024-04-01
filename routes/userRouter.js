@@ -20,7 +20,7 @@ userRouter.patch(
     "/users/avatars",
     upload.single("photo"),
     authtenticate,
-    authController.changeAvatar
+    userController.changeAvatar
 );
 
 export default userRouter;
