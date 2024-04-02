@@ -49,6 +49,7 @@ const login = async (req, res, next) => {
     if (!user) {
       throw HttpError(401, "Email or password invalid"); 
     }
+    if (!user.verify) throw HttpError(404, "Email not verified")
     const passwordCompare = await bcrypt.compare(password, user.password);
     if (!passwordCompare) {
       throw HttpError(401, "Email or password invalid"); 
@@ -116,7 +117,8 @@ const changeAvatar = async (req, res, next) => {
 };
 
 export const verify = async (req, res) => {
-  const { verificationToken } = req.body;
+  try {
+    const { verificationToken } = req.body;
   const user = await userServices.findUser({
     verificationToken,
   });
@@ -129,31 +131,38 @@ export const verify = async (req, res) => {
   );
 
   res.status(200).json({ message: "Verification successful" });
+  } catch (error) {
+    next(error)
+  }
 }
 
 const verifyAgain = async (req, res) => {
-  const { email } = req.body;
-  const user = await usersService.findUser({ email });
+  try {
+    const { email } = req.body;
+    const user = await usersService.findUser({ email });
 
-  if (!user) throw HttpError(404);
+    if (!user) throw HttpError(404);
 
-  if (user.verify) {
-    return res.status(400).json({
-      message: "Verification has already been passed",
+    if (user.verify) {
+      return res.status(400).json({
+        message: "Verification has already been passed",
+      });
+    }
+
+    const verifyEmail = {
+      to: [email, "artem_tokarev@ukr.net"],
+      subject: "Verify email",
+      html: `<a href="${BASE_URL}/api/users/verify/${user.verificationToken}" target="_blank">Click to verify</a>`,
+    };
+
+    await sendEmail(verifyEmail);
+
+    res.status(200).json({
+      message: "Verification email sent",
     });
+  } catch (error) {
+    next(error)
   }
-
-  const verifyEmail = {
-    to: [email, "artem_tokarev@ukr.net"],
-    subject: "Verify email",
-    html: `<a href="${BASE_URL}/api/users/verify/${user.verificationToken}" target="_blank">Click to verify</a>`,
-  };
-
-  await sendEmail(verifyEmail);
-
-  res.status(200).json({
-    message: "Verification email sent",
-  });
 };
 
 
